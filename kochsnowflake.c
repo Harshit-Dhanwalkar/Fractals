@@ -1,19 +1,17 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <stdbool.h>
-#include <math.h> // For sin, cos, sqrt
+#include <math.h>
 
 #define WIDTH 800
 #define HEIGHT 800
 
-// Maximum recursion depth for the Koch curve
-// Higher values mean more detail, but also more computation
 #define MAX_RECURSION_DEPTH 5
 
 // Global variables for zoom and pan
-double g_zoom = 1.0;         // Current zoom level
-double g_offset_x = 0.0;     // X offset for panning
-double g_offset_y = 0.0;     // Y offset for panning
+double g_zoom = 1.0;
+double g_offset_x = 0.0;
+double g_offset_y = 0.0;
 
 // For mouse drag panning
 int g_mouse_down_x = 0;
@@ -35,12 +33,8 @@ void drawLine(SDL_Renderer* renderer, Point p1, Point p2) {
                        (int)((p2.y * g_zoom) + g_offset_y));
 }
 
-// Recursive function to draw a Koch curve segment
-// p1 and p2 define the current line segment
-// depth is the current recursion level
 void drawKochCurve(SDL_Renderer* renderer, Point p1, Point p2, int depth) {
     if (depth == 0) {
-        // Base case: at the maximum recursion depth, just draw the line segment
         drawLine(renderer, p1, p2);
     } else {
         // Calculate the four intermediate points that form the new segments
@@ -61,7 +55,7 @@ void drawKochCurve(SDL_Renderer* renderer, Point p1, Point p2, int depth) {
 
         // Point C (tip of the equilateral triangle)
         // Rotate vector BD by 60 degrees (M_PI / 3) around B for point C
-        double angle = M_PI / 3.0; // 60 degrees in radians
+        double angle = M_PI / 3.0;
         Point p_c;
         p_c.x = p_ab.x + (p_cd.x - p_ab.x) * cos(angle) - (p_cd.y - p_ab.y) * sin(angle);
         p_c.y = p_ab.y + (p_cd.x - p_ab.x) * sin(angle) + (p_cd.y - p_ab.y) * cos(angle);
@@ -127,7 +121,7 @@ int main() {
                     break;
                 case SDL_KEYDOWN:
                     if (event.key.keysym.sym == SDLK_UP) {
-                        if (current_depth < 7) { // Limit depth to avoid excessive computation
+                        if (current_depth < 7) {
                             current_depth++;
                             printf("Current Depth: %d\n", current_depth);
                         } else {
@@ -145,25 +139,21 @@ int main() {
                         g_zoom = 1.0;
                         g_offset_x = 0.0;
                         g_offset_y = 0.0;
-                        current_depth = MAX_RECURSION_DEPTH; // Reset depth as well
+                        current_depth = MAX_RECURSION_DEPTH;
                         printf("Resetting zoom, pan, and depth.\n");
                     }
                     break;
                 case SDL_MOUSEWHEEL:
                     {
                         double zoom_factor = 1.2;
-                        // Get mouse position for zooming around cursor
                         int mouse_x, mouse_y;
                         SDL_GetMouseState(&mouse_x, &mouse_y);
 
-                        // Adjust offsets so that the point under the cursor stays fixed
-                        // Inverse transformation: world_x = (screen_x - offset_x) / zoom
-                        // New offset_x = screen_x - (world_x * new_zoom)
-                        if (event.wheel.y > 0) { // Scroll up (zoom in)
+                        if (event.wheel.y > 0) {
                             g_offset_x = mouse_x - ((mouse_x - g_offset_x) * zoom_factor);
                             g_offset_y = mouse_y - ((mouse_y - g_offset_y) * zoom_factor);
                             g_zoom *= zoom_factor;
-                        } else if (event.wheel.y < 0) { // Scroll down (zoom out)
+                        } else if (event.wheel.y < 0) {
                             g_offset_x = mouse_x - ((mouse_x - g_offset_x) / zoom_factor);
                             g_offset_y = mouse_y - ((mouse_y - g_offset_y) / zoom_factor);
                             g_zoom /= zoom_factor;
@@ -194,21 +184,17 @@ int main() {
         }
 
         // Clear the screen
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        // Set draw color for the snowflake (e.g., white)
+        // Set draw color for the snowflake
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
         // Define the initial equilateral triangle points for the snowflake
-        // These points are "world coordinates" and will be scaled/offset by drawLine
         double side_length = 600.0;
-        // Adjust initial positioning to center it properly based on its own geometry
-        // The Y-coordinate needs adjustment because the triangle's center of mass
-        // isn't at the geometric center relative to its bounding box.
-        Point p1 = {WIDTH / 2.0 - side_length / 2.0, HEIGHT / 2.0 + side_length / (2.0 * sqrt(3.0)) - 50}; // Adjusted Y
-        Point p2 = {WIDTH / 2.0 + side_length / 2.0, HEIGHT / 2.0 + side_length / (2.0 * sqrt(3.0)) - 50}; // Adjusted Y
-        Point p3 = {WIDTH / 2.0, HEIGHT / 2.0 - side_length * sqrt(3.0) / 2.0 + side_length / (2.0 * sqrt(3.0)) - 50}; // Adjusted Y
+        Point p1 = {WIDTH / 2.0 - side_length / 2.0, HEIGHT / 2.0 + side_length / (2.0 * sqrt(3.0)) - 50};
+        Point p2 = {WIDTH / 2.0 + side_length / 2.0, HEIGHT / 2.0 + side_length / (2.0 * sqrt(3.0)) - 50};
+        Point p3 = {WIDTH / 2.0, HEIGHT / 2.0 - side_length * sqrt(3.0) / 2.0 + side_length / (2.0 * sqrt(3.0)) - 50};
 
         // Draw the three sides of the snowflake by calling Koch curve for each side
         drawKochCurve(renderer, p1, p2, current_depth);
