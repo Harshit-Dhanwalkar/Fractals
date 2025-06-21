@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <complex.h>
+#include <SDL2/SDL_ttf.h>
 
 #define WIDTH 800
 #define HEIGHT 800
@@ -37,7 +38,7 @@ SDL_Color getColor(int iterations, int current_max_iterations_limit) {
         color.r = r;
         color.g = g;
         color.b = b;
-        color.a = 255; // Fully opaque
+        color.a = 255;
     }
     return color;
 }
@@ -88,17 +89,80 @@ void calculateAndRenderBurningShip(SDL_Renderer* renderer, SDL_Texture* texture,
     printf("Burning Ship calculation complete.\n");
 }
 
+// Function to render text on the screen
+void renderText(SDL_Renderer* renderer, TTF_Font* font, const char* text, int x, int y, SDL_Color color) {
+    if (!font) {
+        // If font is not loaded, skip text rendering
+        return;
+    }
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
+    if (surface == NULL) {
+        printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+        return;
+    }
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (texture == NULL) {
+        printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+        SDL_FreeSurface(surface);
+        return;
+    }
+
+    SDL_Rect renderQuad = {x, y, surface->w, surface->h};
+    SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
+
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+}
+
+// Function to save the current renderer content as a BMP image
+void saveScreenshot(SDL_Renderer* renderer, const char* filename) {
+    SDL_Surface* screenshot = NULL;
+    int w, h;
+    SDL_RenderGetLogicalSize(renderer, &w, &h);
+    if (w == 0 || h == 0) {
+        SDL_GetRendererOutputSize(renderer, &w, &h);
+    }
+
+    screenshot = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_ARGB8888);
+    if (screenshot == NULL) {
+        printf("Failed to create surface for screenshot: %s\n", SDL_GetError());
+        return;
+    }
+
+    if (SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_ARGB8888, screenshot->pixels, screenshot->pitch) != 0) {
+        printf("Failed to read pixels for screenshot: %s\n", SDL_GetError());
+        SDL_FreeSurface(screenshot);
+        return;
+    }
+
+    if (SDL_SaveBMP(screenshot, filename) != 0) {
+        printf("Failed to save BMP: %s\n", SDL_GetError());
+    } else {
+        printf("Screenshot saved to %s\n", filename);
+    }
+
+    SDL_FreeSurface(screenshot);
+}
+
 
 int main() {
     printf("Burning Ship Fractal Viewer\n");
     printf("Left click to zoom in.\n");
     printf("Right click to zoom out.\n");
     printf("Press 'R' to reset view.\n");
+    printf("Click 'Screenshot' button in top-right to save an image.\n");
 
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "wayland");
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    // Initialize SDL_ttf
+    if (TTF_Init() == -1) {
+        printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+        SDL_Quit();
         return 1;
     }
 
@@ -115,6 +179,7 @@ int main() {
     // Check if window creation failed
     if (pwindow == NULL) {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        TTF_Quit();
         SDL_Quit();
         return 1;
     }
@@ -124,8 +189,15 @@ int main() {
     if (renderer == NULL) {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(pwindow);
+        TTF_Quit();
         SDL_Quit();
         return 1;
+    }
+
+    // Load a font for displaying text and button
+    TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20);
+    if (font == NULL) {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     }
 
     // Create a texture to store the Burning Ship pixels
@@ -135,6 +207,8 @@ int main() {
                                                        WIDTH, HEIGHT);
     if (fractalTexture == NULL) {
         printf("Failed to create texture: %s\n", SDL_GetError());
+        if (font != NULL) TTF_CloseFont(font);
+        TTF_Quit();
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(pwindow);
         SDL_Quit();
@@ -146,6 +220,8 @@ int main() {
 
     // Initial calculation and render
     calculateAndRenderBurningShip(renderer, fractalTexture, pixels);
+
+    SDL_Rect screenshotButtonRect = {WIDTH - 120, 10, 110, 30};
 
     // --- Event Loop ---
     bool application_running = true;
@@ -161,43 +237,52 @@ int main() {
                     int mouseX = event.button.x;
                     int mouseY = event.button.y;
 
-                    // Calculate the complex coordinate where the mouse clicked
-                    double current_complex_real = g_real_min + (mouseX / (double)WIDTH) * (g_real_max - g_real_min);
-                    double current_complex_imag = g_imag_min + (mouseY / (double)HEIGHT) * (g_imag_max - g_imag_min);
+                    // Check if screenshot button was clicked
+                    if (event.button.button == SDL_BUTTON_LEFT &&
+                        mouseX >= screenshotButtonRect.x &&
+                        mouseX <= screenshotButtonRect.x + screenshotButtonRect.w &&
+                        mouseY >= screenshotButtonRect.y &&
+                        mouseY <= screenshotButtonRect.y + screenshotButtonRect.h) {
+                        saveScreenshot(renderer, "burningship_screenshot.bmp");
+                    } else {
+                        // Original fractal zoom/pan logic
+                        double current_complex_real = g_real_min + (mouseX / (double)WIDTH) * (g_real_max - g_real_min);
+                        double current_complex_imag = g_imag_min + (mouseY / (double)HEIGHT) * (g_imag_max - g_imag_min);
 
-                    if (event.button.button == SDL_BUTTON_LEFT) {
-                        // Zoom in
-                        double new_real_width = (g_real_max - g_real_min) / ZOOM_FACTOR;
-                        double new_imag_height = (g_imag_max - g_imag_min) / ZOOM_FACTOR;
+                        if (event.button.button == SDL_BUTTON_LEFT) {
+                            // Zoom in
+                            double new_real_width = (g_real_max - g_real_min) / ZOOM_FACTOR;
+                            double new_imag_height = (g_imag_max - g_imag_min) / ZOOM_FACTOR;
 
-                        g_real_min = current_complex_real - (new_real_width / 2.0);
-                        g_real_max = current_complex_real + (new_real_width / 2.0);
-                        g_imag_min = current_complex_imag - (new_imag_height / 2.0);
-                        g_imag_max = current_complex_imag + (new_imag_height / 2.0);
+                            g_real_min = current_complex_real - (new_real_width / 2.0);
+                            g_real_max = current_complex_real + (new_real_width / 2.0);
+                            g_imag_min = current_complex_imag - (new_imag_height / 2.0);
+                            g_imag_max = current_complex_imag + (new_imag_height / 2.0);
 
-                        // Increase max iterations for more detail when zooming in
-                        g_current_max_iterations = fmin(5000, g_current_max_iterations * 1.2);
-                        // Ensure a minimum number of iterations
-                        if (g_current_max_iterations < 100) g_current_max_iterations = 100;
+                            // Increase max iterations for more detail when zooming in
+                            g_current_max_iterations = fmin(5000, g_current_max_iterations * 1.2);
+                            // Ensure a minimum number of iterations
+                            if (g_current_max_iterations < 100) g_current_max_iterations = 100;
 
-                        calculateAndRenderBurningShip(renderer, fractalTexture, pixels);
-                    } else if (event.button.button == SDL_BUTTON_RIGHT) {
-                        // Zoom out
-                        double center_real = (g_real_min + g_real_max) / 2.0;
-                        double center_imag = (g_imag_min + g_imag_max) / 2.0;
+                            calculateAndRenderBurningShip(renderer, fractalTexture, pixels);
+                        } else if (event.button.button == SDL_BUTTON_RIGHT) {
+                            // Zoom out
+                            double center_real = (g_real_min + g_real_max) / 2.0;
+                            double center_imag = (g_imag_min + g_imag_max) / 2.0;
 
-                        double new_real_width = (g_real_max - g_real_min) * ZOOM_FACTOR;
-                        double new_imag_height = (g_imag_max - g_imag_min) * ZOOM_FACTOR;
+                            double new_real_width = (g_real_max - g_real_min) * ZOOM_FACTOR;
+                            double new_imag_height = (g_imag_max - g_imag_min) * ZOOM_FACTOR;
 
-                        g_real_min = center_real - (new_real_width / 2.0);
-                        g_real_max = center_real + (new_real_width / 2.0);
-                        g_imag_min = center_imag - (new_imag_height / 2.0);
-                        g_imag_max = center_imag + (new_imag_height / 2.0);
+                            g_real_min = center_real - (new_real_width / 2.0);
+                            g_real_max = center_real + (new_real_width / 2.0);
+                            g_imag_min = center_imag - (new_imag_height / 2.0);
+                            g_imag_max = center_imag + (new_imag_height / 2.0);
 
-                        // Decrease max iterations when zooming out (less detail needed)
-                        g_current_max_iterations = fmax(100, g_current_max_iterations / 1.2);
+                            // Decrease max iterations when zooming out
+                            g_current_max_iterations = fmax(100, g_current_max_iterations / 1.2);
 
-                        calculateAndRenderBurningShip(renderer, fractalTexture, pixels);
+                            calculateAndRenderBurningShip(renderer, fractalTexture, pixels);
+                        }
                     }
                     break;
                 case SDL_KEYDOWN:
@@ -218,11 +303,40 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, fractalTexture, NULL, NULL);
+
+        // Render current view information
+        if (font != NULL) {
+            char text_buffer[200];
+            SDL_Color textColor = {255, 255, 255, 255}; // White color for text
+
+            snprintf(text_buffer, sizeof(text_buffer), "R: [%.3f, %.3f]", g_real_min, g_real_max);
+            renderText(renderer, font, text_buffer, 10, 10, textColor);
+
+            snprintf(text_buffer, sizeof(text_buffer), "I: [%.3f, %.3f]", g_imag_min, g_imag_max);
+            renderText(renderer, font, text_buffer, 10, 40, textColor);
+
+            snprintf(text_buffer, sizeof(text_buffer), "Iterations: %d", g_current_max_iterations);
+            renderText(renderer, font, text_buffer, 10, 70, textColor);
+
+            // Draw and render text for the screenshot button
+            SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+            SDL_RenderFillRect(renderer, &screenshotButtonRect);
+            SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+            SDL_RenderDrawRect(renderer, &screenshotButtonRect);
+
+            SDL_Color buttonTextColor = {255, 255, 255, 255};
+            renderText(renderer, font, "Save", screenshotButtonRect.x + 8, screenshotButtonRect.y + 5, buttonTextColor);
+        }
+
         SDL_RenderPresent(renderer);
     }
 
     // --- Cleanup ---
     SDL_DestroyTexture(fractalTexture);
+    if (font != NULL) {
+        TTF_CloseFont(font);
+    }
+    TTF_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(pwindow);
     SDL_Quit();
