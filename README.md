@@ -10,6 +10,8 @@
 | Sierpinski triangle | ![Sierpinski Triangle](assets/sierpinskitriangle.png) | https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle |
 | Newton fractal      | ![Newton Fractal](assets/newton.png)                  | https://en.wikipedia.org/wiki/Newton_fractal           |
 
+| Lyapunov swallow Fractal | ![Lyapunov fractal](assets/lyapunov-swallow.png) | https://en.wikipedia.org/wiki/Lyapunov_fractal |
+
 ---
 
 # Dependensies
