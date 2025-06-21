@@ -6,7 +6,7 @@ LDFLAGS = -lSDL2 -lSDL2_ttf -lm
 
 BIN_DIR = bin
 
-SRCS = contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c mandelbrot.c
+SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c
 
 TARGET_NAMES = $(SRCS:.c=)
 
@@ -20,6 +20,11 @@ $(BIN_DIR):
 
 all: $(BIN_DIR) $(TARGETS)
 	@echo "--- All fractal programs compiled and placed in '$(BIN_DIR)/' directory. ---"
+
+$(BIN_DIR)/mandelbrot: mandelbrot.c $(BIN_DIR)
+	@echo "Compiling and linking $< to $@..."
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
 
 $(BIN_DIR)/contor: contor.c $(BIN_DIR)
 	@echo "Compiling and linking $< to $@..."
@@ -46,17 +51,18 @@ $(BIN_DIR)/sierpinskitriangle: sierpinskitriangle.c $(BIN_DIR)
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
 
-$(BIN_DIR)/mandelbrot: mandelbrot.c $(BIN_DIR)
+$(BIN_DIR)/newton: newton.c $(BIN_DIR)
 	@echo "Compiling and linking $< to $@..."
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
 
-julia: $(BIN_DIR)/julia
+mandelbrot: $(BIN_DIR)/mandelbrot
 contor: $(BIN_DIR)/contor
+julia: $(BIN_DIR)/julia
 burningship: $(BIN_DIR)/burningship
 kochsnowflake: $(BIN_DIR)/kochsnowflake
 sierpinskitriangle: $(BIN_DIR)/sierpinskitriangle
-mandelbrot: $(BIN_DIR)/mandelbrot
+newton: $(BIN_DIR)/newton
 
 # Clean target: Removes all compiled executables and generated .bmp screenshots
 clean:
