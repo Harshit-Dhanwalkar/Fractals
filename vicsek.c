@@ -153,7 +153,7 @@ int main() {
     printf("Mouse Wheel: Zoom in/out (centered on mouse cursor)\n");
     printf("Up/Down Arrows: Adjust recursion depth\n");
     printf("R: Reset view\n");
-    printf("Click 'Screenshot' button to save an image.\n");
+    printf("Click 'Save' button to save an image.\n");
 
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "wayland");
 

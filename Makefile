@@ -6,7 +6,7 @@ LDFLAGS = -lSDL2 -lSDL2_ttf -lm
 
 BIN_DIR = bin
 
-SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c lyapunov.c vicsek.c
+SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c lyapunov.c vicsek.c lorentzattractor.c
 
 TARGET_NAMES = $(SRCS:.c=)
 
@@ -66,6 +66,11 @@ $(BIN_DIR)/vicsek: vicsek.c $(BIN_DIR)
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
 
+$(BIN_DIR)/lorentzattractor: lorentzattractor.c $(BIN_DIR)
+	@echo "Compiling and linking $< to $@..."
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
+
 mandelbrot: $(BIN_DIR)/mandelbrot
 contor: $(BIN_DIR)/contor
 julia: $(BIN_DIR)/julia
@@ -75,6 +80,7 @@ sierpinskitriangle: $(BIN_DIR)/sierpinskitriangle
 newton: $(BIN_DIR)/newton
 lyapunov: $(BIN_DIR)/lyapunov
 vicsek: $(BIN_DIR)/vicsek
+lorentzattractor: $(BIN_DIR)/lorentzattractor
 
 # Clean target: Removes all compiled executables and generated .bmp screenshots
 clean:
