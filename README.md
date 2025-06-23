@@ -16,6 +16,7 @@ This repository explores various fascinating fractals code in pure C usinf [SDL2
 | **Lyapunov swallow Fractal** | ![Lyapunov fractal](assets/lyapunov-swallow.png)      | https://en.wikipedia.org/wiki/Lyapunov_fractal         |
 | **Vicsek Fractal**           | ![Vicsek Fractal](assets/vicsek-fractal.png)          | https://en.wikipedia.org/wiki/Vicsek_fractal           |
 | **Lorentz Attractor**        | ![Lorentz Attractor](assets/lorentzattractor.png)     | https://en.wikipedia.org/wiki/Lorenz_system            |
+| **Dragon Curve**             | ![Dragon Curve](assets/dragoncurve.png)               | https://en.wikipedia.org/wiki/Dragon_curve             |
 
 ---
 

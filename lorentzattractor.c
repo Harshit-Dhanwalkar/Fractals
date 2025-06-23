@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <SDL2/SDL_ttf.h>
-#include <string.h>
 #include <stdlib.h>
 
 // Window dimensions
