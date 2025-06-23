@@ -49,6 +49,35 @@ brew install sdl2 sdl2_ttf
 
 ---
 
+## How to Compile and Run
+
+This project uses a Makefile to simplify the compilation process for all fractal programs.
+
+1. Compile the programs using `make`:
+
+- To compile all fractal programs:
+
+```bash
+make all
+```
+
+This will compile all `.c` files listed in the `Makefile` and place the executables in the `bin/` directory.
+
+- To compile a specific fractal program (e.g., `tricorn`):
+
+```bash
+make tricorn
+```
+
+### Makefile Commands
+
+- `make all`: Compiles all fractal programs.
+- make `<program_name>`: Compiles a specific fractal program (e.g., `make julia`).
+- `make clean`: Removes all compiled executables from `bin/` and any `.bmp` screenshot files from the project root. It also attempts to remove the `bin/` directory if empty.
+- `make help`: Displays a summary of `Makefile` commands.
+
+---
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
