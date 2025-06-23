@@ -6,7 +6,7 @@ LDFLAGS = -lSDL2 -lSDL2_ttf -lm
 
 BIN_DIR = bin
 
-SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c lyapunov.c vicsek.c lorentzattractor.c dragoncurve.c barnsleyfern.c
+SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c lyapunov.c vicsek.c lorentzattractor.c dragoncurve.c barnsleyfern.c tricorn.c
 
 TARGET_NAMES = $(SRCS:.c=)
 
@@ -81,6 +81,11 @@ $(BIN_DIR)/barnsleyfern: barnsleyfern.c $(BIN_DIR)
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
 
+$(BIN_DIR)/tricorn: tricorn.c $(BIN_DIR)
+	@echo "Compiling and linking $< to $@..."
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
+
 mandelbrot: $(BIN_DIR)/mandelbrot
 contor: $(BIN_DIR)/contor
 julia: $(BIN_DIR)/julia
@@ -93,6 +98,7 @@ vicsek: $(BIN_DIR)/vicsek
 lorentzattractor: $(BIN_DIR)/lorentzattractor
 dragoncurve: $(BIN_DIR)/dragoncurve
 barnsleyfern: $(BIN_DIR)/barnsleyfern
+tricorn: $(BIN_DIR)/tricorn
 
 # Clean target: Removes all compiled executables and generated .bmp screenshots
 clean:

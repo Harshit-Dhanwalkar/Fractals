@@ -18,6 +18,7 @@ This repository explores various fascinating fractals code in pure C usinf [SDL2
 | **Lorentz Attractor**        | ![Lorentz Attractor](assets/lorentzattractor.png)     | https://en.wikipedia.org/wiki/Lorenz_system            |
 | **Dragon Curve**             | ![Dragon Curve](assets/dragoncurve.png)               | https://en.wikipedia.org/wiki/Dragon_curve             |
 | **Barnsley Fern Fractal**    | ![Barnsley Fern Fractal](assets/barnsleyfern.png)     | https://en.wikipedia.org/wiki/Barnsley_fern            |
+| **Tricorn Fractal**          | ![Tricorn Fractal](assets/tricorn.png)                | https://en.wikipedia.org/wiki/Tricorn_(mathematics)    |
 
 ---
 
