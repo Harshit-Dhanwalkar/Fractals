@@ -6,7 +6,7 @@ LDFLAGS = -lSDL2 -lSDL2_ttf -lm
 
 BIN_DIR = bin
 
-SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c lyapunov.c vicsek.c lorentzattractor.c dragoncurve.c barnsleyfern.c tricorn.c hcurve3d.c
+SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c lyapunov.c vicsek.c lorentzattractor.c dragoncurve.c barnsleyfern.c tricorn.c hcurve3d.c biomorph.c
 
 TARGET_NAMES = $(SRCS:.c=)
 
@@ -91,6 +91,11 @@ $(BIN_DIR)/hcurve3d: hcurve3d.c $(BIN_DIR)
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
 
+$(BIN_DIR)/biomorph: biomorph.c $(BIN_DIR)
+	@echo "Compiling and linking $< to $@..."
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
+
 mandelbrot: $(BIN_DIR)/mandelbrot
 contor: $(BIN_DIR)/contor
 julia: $(BIN_DIR)/julia
@@ -105,6 +110,7 @@ dragoncurve: $(BIN_DIR)/dragoncurve
 barnsleyfern: $(BIN_DIR)/barnsleyfern
 tricorn: $(BIN_DIR)/tricorn
 hcurve3d: $(BIN_DIR)/hcurve3d
+biomorph: $(BIN_DIR)/biomorph
 
 # Clean target: Removes all compiled executables and generated .bmp screenshots
 clean:
