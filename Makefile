@@ -6,7 +6,7 @@ LDFLAGS = -lSDL2 -lSDL2_ttf -lm
 
 BIN_DIR = bin
 
-SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c lyapunov.c vicsek.c lorentzattractor.c dragoncurve.c barnsleyfern.c tricorn.c hcurve3d.c biomorph.c phoenix.c
+SRCS = mandelbrot.c contor.c julia.c burningship.c kochsnowflake.c sierpinskitriangle.c newton.c lyapunov.c vicsek.c dragoncurve.c barnsleyfern.c tricorn.c hcurve3d.c biomorph.c phoenix.c lorentzattractor.c chenleeattractor.c
 
 TARGET_NAMES = $(SRCS:.c=)
 
@@ -66,11 +66,6 @@ $(BIN_DIR)/vicsek: vicsek.c $(BIN_DIR)
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
 
-$(BIN_DIR)/lorentzattractor: lorentzattractor.c $(BIN_DIR)
-	@echo "Compiling and linking $< to $@..."
-	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
-	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
-
 $(BIN_DIR)/dragoncurve: dragoncurve.c $(BIN_DIR)
 	@echo "Compiling and linking $< to $@..."
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
@@ -101,6 +96,16 @@ $(BIN_DIR)/phoenix: phoenix.c $(BIN_DIR)
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
 
+$(BIN_DIR)/lorentzattractor: lorentzattractor.c $(BIN_DIR)
+	@echo "Compiling and linking $< to $@..."
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
+
+$(BIN_DIR)/chenleeattractor: chenleeattractor.c $(BIN_DIR)
+	@echo "Compiling and linking $< to $@..."
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+	@if [ -f "$@" ]; then echo "SUCCESS: Executable '$@' created."; else echo "FAILURE: Executable '$@' NOT created. Check errors above."; fi
+
 mandelbrot: $(BIN_DIR)/mandelbrot
 contor: $(BIN_DIR)/contor
 julia: $(BIN_DIR)/julia
@@ -108,7 +113,6 @@ burningship: $(BIN_DIR)/burningship
 kochsnowflake: $(BIN_DIR)/kochsnowflake
 sierpinskitriangle: $(BIN_DIR)/sierpinskitriangle
 newton: $(BIN_DIR)/newton
-lyapunov: $(BIN_DIR)/lyapunov
 vicsek: $(BIN_DIR)/vicsek
 lorentzattractor: $(BIN_DIR)/lorentzattractor
 dragoncurve: $(BIN_DIR)/dragoncurve
@@ -117,6 +121,8 @@ tricorn: $(BIN_DIR)/tricorn
 hcurve3d: $(BIN_DIR)/hcurve3d
 biomorph: $(BIN_DIR)/biomorph
 phoenix: $(BIN_DIR)/phoenix
+lyapunov: $(BIN_DIR)/lyapunov
+chenleeattractor: $(BIN_DIR)/chenleeattractor
 
 # Clean target: Removes all compiled executables and generated .bmp screenshots
 clean:
