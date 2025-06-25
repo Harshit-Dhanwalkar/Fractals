@@ -23,6 +23,7 @@ This repository explores various fascinating fractals coded in pure C using [SDL
 | **Tricorn Fractal**          | ![Tricorn Fractal](assets/tricorn.png)                | https://en.wikipedia.org/wiki/Tricorn_(mathematics)                               |
 | **Hilbert curve 3D Fractal** | ![Hcurve 3D](assets/hcurve3d.png)                     | https://en.wikipedia.org/wiki/https://en.wikipedia.org/wiki/Hilbert_curve         |
 | **Biomorph Fractal**         | ![Biomorph Fractal](assets/biomorph.png)              | https://en.wikipedia.org/wiki/Biomorph, https://paulbourke.net/fractals/biomorph/ |
+| **Phoenix Fractal**          | ![Phoenix Fractal](assets/phoenix.png)                | https://www.ultrafractal.com/help/index.html?/help/formulas/standard/phoenix.html |
 
 ---
 
