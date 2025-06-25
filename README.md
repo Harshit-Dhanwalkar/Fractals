@@ -17,13 +17,22 @@ This repository explores various fascinating fractals coded in pure C using [SDL
 | **Newton fractal**           | ![Newton Fractal](assets/newton.png)                  | https://en.wikipedia.org/wiki/Newton_fractal                                      |
 | **Lyapunov swallow Fractal** | ![Lyapunov fractal](assets/lyapunov-swallow.png)      | https://en.wikipedia.org/wiki/Lyapunov_fractal                                    |
 | **Vicsek Fractal**           | ![Vicsek Fractal](assets/vicsek-fractal.png)          | https://en.wikipedia.org/wiki/Vicsek_fractal                                      |
-| **Lorenz Attractor**         | ![Lorenz Attractor](assets/lorentzattractor.png)      | https://en.wikipedia.org/wiki/Lorenz_system                                       |
 | **Dragon Curve**             | ![Dragon Curve](assets/dragoncurve.png)               | https://en.wikipedia.org/wiki/Dragon_curve                                        |
 | **Barnsley Fern Fractal**    | ![Barnsley Fern Fractal](assets/barnsleyfern.png)     | https://en.wikipedia.org/wiki/Barnsley_fern                                       |
 | **Tricorn Fractal**          | ![Tricorn Fractal](assets/tricorn.png)                | https://en.wikipedia.org/wiki/Tricorn_(mathematics)                               |
 | **Hilbert curve 3D Fractal** | ![Hcurve 3D](assets/hcurve3d.png)                     | https://en.wikipedia.org/wiki/https://en.wikipedia.org/wiki/Hilbert_curve         |
 | **Biomorph Fractal**         | ![Biomorph Fractal](assets/biomorph.png)              | https://en.wikipedia.org/wiki/Biomorph, https://paulbourke.net/fractals/biomorph/ |
 | **Phoenix Fractal**          | ![Phoenix Fractal](assets/phoenix.png)                | https://www.ultrafractal.com/help/index.html?/help/formulas/standard/phoenix.html |
+
+---
+
+## Implemented Attractor
+
+| Attractor             | Image                                            | Wikipedia                                           |
+| :-------------------- | :----------------------------------------------- | :-------------------------------------------------- |
+| **Lorenz Attractor**  | ![Lorenz Attractor](assets/lorentzattractor.png) | https://en.wikipedia.org/wiki/Lorenz_system         |
+| **Chenlee Attractor** |                                                  | https://en.wikipedia.org/wiki/Multiscroll_attractor |
+| **Aizawa Attractor**  |                                                  |                                                     |
 
 ---
 
